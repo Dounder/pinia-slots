@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-x-auto w-full">
+  <div class="overflow-x-auto flex-1">
     <table class="table">
       <!-- head -->
       <thead>
@@ -12,11 +12,22 @@
       </thead>
       <tbody>
         <!-- row 2 -->
-        <tr class="hover">
-          <th>1</th>
-          <td>Proyecto</td>
-          <td>Tareas</td>
-          <td>Progreso</td>
+        <tr
+          class="hover"
+          v-for="(project, index) in projectsStore.projectWithCompletion"
+          :key="project.id"
+        >
+          <th>{{ index + 1 }}</th>
+          <td>{{ project.name }}</td>
+          <td>{{ project.taskCount }}</td>
+          <td>
+            <progress
+              class="progress progress-primary w-56"
+              :value="project.completion"
+              max="100"
+            />
+            {{ project.completion }}%
+          </td>
         </tr>
       </tbody>
     </table>
@@ -24,7 +35,7 @@
     <input-modal
       :open="modalOpen"
       @close="modalOpen = false"
-      @value="onNewProject"
+      @value="projectsStore.addProject"
       title="Nuevo proyecto"
       subtitle="Ingresa el nombre del proyecto"
       placeholder="Nombre de proyecto"
@@ -69,13 +80,12 @@ import FabButton from '@/modules/common/components/FabButton.vue'
 import InputModal from '@/modules/common/components/InputModal.vue'
 import AddCircle from '@/modules/common/icons/AddCircle.vue'
 import ModalIcon from '@/modules/common/icons/ModalIcon.vue'
+import { useProjectsStore } from '../store/projects.store'
+
+const projectsStore = useProjectsStore()
 
 const modalOpen = ref(false)
 const customModalOpen = ref(false)
-
-const onNewProject = (value: string) => {
-  console.log({ value })
-}
 </script>
 
 <style scoped></style>

@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 interface Props {
   open: boolean
@@ -39,15 +39,22 @@ interface Props {
   subtitle?: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   placeholder: 'Nombre de proyecto',
   title: 'Nuevo proyecto',
   subtitle: 'Ingresa el nombre del proyecto'
 })
+
 const emits = defineEmits<{
   close: [void]
   value: [text: string]
 }>()
+
+watch(props, ({ open }) => {
+  if (open) inputRef.value?.focus()
+
+  if (!open) inputRef.value?.blur()
+})
 
 const inputValue = ref('')
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -66,5 +73,3 @@ const submitValue = () => {
   inputValue.value = ''
 }
 </script>
-
-<style scoped></style>
